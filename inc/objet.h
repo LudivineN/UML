@@ -13,7 +13,7 @@ class Objet{
 		int chance;
 		bool visibilite;
 	public:
-		Objet(string name, int case_x, int case_y, int p, int c, bool visib);
+		Objet(string name, int case_x, int case_y);
 		string getNameobj();
 		int getCase_x();
 		int getCase_y();
