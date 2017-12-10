@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <string>
-#include <list>
+#include <vector>
 #include "../inc/objet.h"
 
 
@@ -13,7 +13,7 @@ class Player
         Player(int, int);
         Player();
         Player(int, int, std::string);
-        Player(int, int, std::string, bool, int, std::list<Objet>);
+        Player(int, int, std::string, bool, int, std::vector<Objet>);
         virtual ~Player();
         void show();
         bool deplacer(bool, bool, bool, bool);
@@ -29,7 +29,7 @@ class Player
         int y;
         bool vivant;
         int chance;
-        std::list<Objet> objets;
+        std::vector<Objet> objets;
 };
 
 #endif // PLAYER_H
