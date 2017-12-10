@@ -22,7 +22,7 @@ Player::Player(int x, int y, std::string nom) : x(x), y(y), vivant(true), chance
     nbPlayer++;
 }
 
-Player::Player(int x, int y, std::string nom, bool vivant, int chance, list<Objet> objets) : x(x), y(y), vivant(vivant), chance(chance), nom(nom), objets(objets)
+Player::Player(int x, int y, std::string nom, bool vivant, int chance, std::vector<Objet> objets) : x(x), y(y), vivant(vivant), chance(chance), nom(nom), objets(objets)
 {
     //ctor
     nbPlayer++;
