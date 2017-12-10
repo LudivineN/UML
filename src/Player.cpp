@@ -48,6 +48,11 @@ bool Player::deplacer(bool z, bool q, bool s, bool d)
     return noError;
 }
 
+std::string Player::getNom()
+{
+    return nom;
+}
+
 int Player::getCase_x()
 {
     return x;
@@ -91,7 +96,7 @@ bool Player::combat()
     {
         int tmp = rand() %10 + 1;
         if (tmp <= 9) {return true;}
-        vivant = false:
+        vivant = false ;
         return false;
     }
     else if (chance >= 50)

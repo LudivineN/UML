@@ -3,6 +3,10 @@
 #include "../inc/objet.h"
 
 using namespace std;
+Objet :: Objet (string  nameobj, int x, int y, int portee, int chance, bool visibilite)
+{
+}
+
 
 Objet :: Objet(string name, int case_x, int case_y)
 {
@@ -66,8 +70,4 @@ bool Objet :: getVisibilite()
 	return visibilite;
 }
 
-int main()
-{
-
-}
 
