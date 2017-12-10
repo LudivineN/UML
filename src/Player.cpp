@@ -22,6 +22,12 @@ Player::Player(int x, int y, std::string nom) : x(x), y(y), vivant(true), chance
     nbPlayer++;
 }
 
+Player::Player(int x, int y, std::string nom, bool vivant, int chance, list<Objet> objets) : x(x), y(y), vivant(vivant), chance(chance), nom(nom), objets(objets)
+{
+    //ctor
+    nbPlayer++;
+}
+
 void Player::show()
 {
     std::cout << "nom: " << nom << std::endl;
@@ -40,6 +46,21 @@ bool Player::deplacer(bool z, bool q, bool s, bool d)
     if (d) { if (!q) {if (x + 1 < 12) {noError = true; x += 1;}}}
 
     return noError;
+}
+
+int Player::getCase_x()
+{
+    return x;
+}
+
+int Player::getCase_y()
+{
+    return y;
+}
+
+bool Player::isAlive()
+{
+    return vivant;
 }
 
 Player::~Player()
