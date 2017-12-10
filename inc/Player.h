@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <string>
+#include <list>
+#include "../inc/objet.h"
 
 
 class Player
@@ -11,9 +13,13 @@ class Player
         Player(int, int);
         Player();
         Player(int, int, std::string);
+        Player(int, int, std::string, bool, int, std::list<Objet>);
         virtual ~Player();
         void show();
         bool deplacer(bool, bool, bool, bool);
+        int getCase_x();
+        int getCase_y();
+        bool isAlive();
 
     protected:
 
@@ -23,6 +29,7 @@ class Player
         int y;
         bool vivant;
         int chance;
+        std::list<Objet> objets;
 };
 
 #endif // PLAYER_H
