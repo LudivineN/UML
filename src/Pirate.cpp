@@ -34,10 +34,20 @@ void Pirate::show()
 bool Pirate::deplacer(bool z, bool q, bool s, bool d)
 {
     bool noError = false;
-    if (z) { if (!s) {noError = true; y += 1;}}
-    if (q) { if (!d) {noError = true; x -= 1;}}
-    if (s) { if (!z) {noError = true; y -= 1;}}
-    if (d) { if (!q) {noError = true; x += 1;}}
+    if (z) { if (!s) {if (y + 1 < 12) {noError = true; y += 1;}}}
+    if (q) { if (!d) {if (x - 1 > 0) {noError = true; x -= 1;}}}
+    if (s) { if (!z) {if (y - 1 > 0) {noError = true; y -= 1;}}}
+    if (d) { if (!q) {if (x + 1 < 12) {noError = true; x += 1;}}}
 
     return noError;
+}
+
+int Pirate::getCase_x()
+{
+    return x;
+}
+
+int Pirate::getCase_y()
+{
+    return y;
 }
