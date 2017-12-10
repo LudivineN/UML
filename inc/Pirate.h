@@ -14,6 +14,8 @@ class Pirate
         void show();
         bool deplacer(bool, bool, bool, bool);
         std::string get_nom();
+        int getCase_x();
+        int getCase_y();
 
     protected:
         int portee;
