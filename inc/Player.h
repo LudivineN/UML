@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <stdlib.h>
 #include <vector>
 #include "../inc/objet.h"
 
@@ -20,6 +21,10 @@ class Player
         int getCase_x();
         int getCase_y();
         bool isAlive();
+        int getChance();
+        std::vector<Objet> getObjets();
+        bool combat();
+        bool AddObjet(Objet);
 
     protected:
 
