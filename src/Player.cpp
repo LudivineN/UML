@@ -63,7 +63,50 @@ bool Player::isAlive()
     return vivant;
 }
 
+int Player::getChance()
+{
+    return chance;
+}
+
+std::vector<Objet> Player::getObjets()
+{
+    return objets;
+}
+
+bool Player::AddObjet(Objet obj)
+{
+    for (int i = 0; i < objets.size(); i++)
+    {
+        if (objets[i].getNameobj() == obj.getNameobj()) {return true;}
+    }
+    objets.push_back(obj);
+    chance += obj.getChance();
+    return false;
+}
+
+bool Player::combat()
+{
+    if (chance >= 100) {return true;}
+    else if (chance >= 90)
+    {
+        int tmp = rand() %10 + 1;
+        if (tmp <= 9) {return true;}
+        vivant = false:
+        return false;
+    }
+    else if (chance >= 50)
+    {
+        int tmp = rand() %10 + 1;
+        if (tmp <= 5) {return true;}
+        vivant = false;
+        return false;
+    }
+    vivant = false;
+    return false;
+}
+
 Player::~Player()
 {
     //dtor
+    objets.clear();
 }
