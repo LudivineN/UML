@@ -20,6 +20,8 @@ class Objet{
 		int getPortee();
 		int getChance();
 		bool getVisibilite();	
+Objet (string  nameobj, int x, int y, int portee, int chance, bool visibilite) ;
+
 };
 
 

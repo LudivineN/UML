@@ -18,6 +18,7 @@ class Player
         virtual ~Player();
         void show();
         bool deplacer(bool, bool, bool, bool);
+		std::string getNom();
         int getCase_x();
         int getCase_y();
         bool isAlive();
