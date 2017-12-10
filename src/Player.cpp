@@ -105,6 +105,15 @@ bool Player::combat()
     return false;
 }
 
+bool Player::checkObjet(std::string name)
+{
+    for (int i = 0; i < objets.size(); i++)
+    {
+        if (objets[i].getNameobj() == name) {return true;}
+    }
+    return false;
+}
+
 Player::~Player()
 {
     //dtor
