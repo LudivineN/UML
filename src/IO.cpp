@@ -667,16 +667,18 @@ bool choixValide(int choix2)
 			cin >> choix2 ;
 			choixValide(choix2) ;
 		}
-		else
+		else if (choix3 == 2)
 		{
+cerr << "test" << endl ;
 			return false;
+cerr << "test2" << endl ;
 		}
 	}
 	testsave.close() ;
 	return true ;
 }
 
-void chooseGame(int choix)
+void chooseGame(int & choix)
 {
 	cout << "1 : Nouvelle Partie" << endl << "2 : Partie enregistré" << endl ;
 	cin >> choix ;
@@ -699,9 +701,11 @@ void chooseGame(int choix)
 			cout << "Numéro invalide" << endl << "Entre 1 et 9 compris)" <<endl ;
 			cin >> choix2 ;
 		}
-		while (!choixValide(choix2))
+		while (choixValide(choix2))
 		{
+cerr << "while" << endl ;
 			return chooseGame(choix) ;
+cerr << "while2" << endl ;
 		}
 		SavedGame(choix2) ;
 		return ;
