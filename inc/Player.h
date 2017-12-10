@@ -25,6 +25,7 @@ class Player
         std::vector<Objet> getObjets();
         bool combat();
         bool AddObjet(Objet);
+        bool checkObjet(std::string);
 
     protected:
 
