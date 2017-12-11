@@ -145,7 +145,7 @@ bool Interrupt (char entree, Plateau terrain)
 	else
 	{
 		int choix ;
-		cout << "Vous êtes sur le point de quitter la partie" << endl << "Voulez vous :" << endl << "1 : Quitter sans enregistrer" << endl << "2 : Sauvegarder et quitter" << endl << "3 : Sauvegarder et continuer" << endl ;
+		cout << "Vous êtes sur le point de quitter la partie" << endl << "Voulez vous :" << endl << "1 : Quitter sans enregistrer" << endl << "2 : Sauvegarder et quitter" << endl << "3 : Sauvegarder et continuer" << "4 : Continuer sans sauvegarder" << endl ;
 		cin >> choix ;
 		if (choix == 1)
 		{
@@ -159,6 +159,10 @@ bool Interrupt (char entree, Plateau terrain)
 		else if (choix == 3)
 		{
 			save (terrain) ;
+			return false ;
+		}
+		else if (choix == 4)
+		{
 			return false ;
 		}
 		else
@@ -191,6 +195,17 @@ void TourEnnemis(Plateau current)
 		current.Modif() ;
 		affiche (current) ;
 		while (DetectJoueur(current.listeFlibustier, current.listeJoueur, i)) 
+		{
+			current.Modif() ;
+			affiche(current) ;
+		}
+	}
+	for (int i = 0 ; i < current.listeBoucanier.size() ; i++)
+	{
+		DeplacementPirate(current.listeBoucanier, i) ;
+		current.Modif() ;
+		affiche (current) ;
+		while (DetectJoueur(current.listeBoucanier, current.listeJoueur, i)) 
 		{
 			current.Modif() ;
 			affiche(current) ;
@@ -316,12 +331,13 @@ bool conditionFin(Plateau terrain)
 	} 
 	if (terrain.listeObjet[terrain.listeObjet.size()-1].getNameobj() == "tresor")
 	{
-		return true ;
+		return false ;
 	}
 	else 
 	{
-		return false ;
+		return true ;
 	}
+	return true;
 }
 
 void NewGame()
@@ -859,9 +875,7 @@ bool choixValide(int choix2)
 		}
 		else if (choix3 == 2)
 		{
-cerr << "test" << endl ;
 			return false;
-cerr << "test2" << endl ;
 		}
 	}
 	testsave.close() ;
