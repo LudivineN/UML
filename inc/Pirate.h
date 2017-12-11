@@ -16,6 +16,7 @@ class Pirate
         std::string get_nom();
         int getCase_x();
         int getCase_y();
+		int getPortee() ;
 
     protected:
         int portee;

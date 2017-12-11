@@ -5,6 +5,13 @@
 using namespace std;
 Objet :: Objet (string  nameobj, int x, int y, int portee, int chance, bool visibilite)
 {
+	this -> nameobj = nameobj;
+	this -> x = x;
+	this -> y = y;
+	this -> portee = portee; 
+	this -> chance = chance;
+	this -> visibilite = visibilite;   
+
 }
 
 
