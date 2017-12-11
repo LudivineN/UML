@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <stdlib.h>
 
 
 class Pirate
@@ -12,7 +13,8 @@ class Pirate
         Pirate(int, int);
         virtual ~Pirate();
         void show();
-        bool deplacer(bool, bool, bool, bool);
+        bool deplacer();
+        bool deplacer_bis(bool, bool, bool, bool);
         std::string get_nom();
         int getCase_x();
         int getCase_y();
