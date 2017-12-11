@@ -10,6 +10,20 @@
 using namespace std ;
 
 
+
+// Prototype
+void affiche(Plateau terrain) ;
+bool Interrupt (char entree, Plateau terrain) ;
+void Mecanisme (Plateau terrain) ;
+bool conditionFin(Plateau terrain) ;
+void NewGame() ;
+void SavedGame(char number) ;
+void save (Plateau current) ;
+bool choixValide(int choix2) ;
+void chooseGame(int & choix) ;
+
+
+
 void affiche(Plateau terrain)
 {
 	cout << " __ __ __ __ __ __ __ __ __ __ __ __" << endl ;
@@ -114,17 +128,58 @@ void affiche(Plateau terrain)
 	}
 }
 
+bool Interrupt (char entree, Plateau terrain)
+{
+	if ((entree == '1') || (entree == '2') || (entree == '3') || (entree == '4') || (entree == '6') || (entree == '7') || (entree == '8') || (entree == '9'))
+	{
+		return false ;
+	}
+	else
+	{
+		int choix ;
+		cout << "Vous êtes sur le point de quitter la partie" << endl << "Voulez vous :" << endl << "1 : Quitter sans enregistrer" << endl << "2 : Sauvegarder et quitter" << endl << "3 : Sauvegarder et continuer" << endl ;
+		cin >> choix ;
+		if (choix == 1)
+		{
+			return true ;
+		}
+		else if (choix == 2)
+		{
+			save(terrain) ;
+			return true ;
+		}
+		else if (choix == 3)
+		{
+			save (terrain) ;
+			return false ;
+		}
+		else
+		{
+			cout << "Nous n'avons pas compris votre choix" << endl << "1 : Quitter sans enregistrer" << endl << "2 : Sauvegarder et quitter" << endl << "3 : Sauvegarder et continuer" << endl ;
+			cin >> choix ;
+			return Interrupt(choix, terrain) ;
+		}
+		 
+	}
+
+}
+
 void Mecanisme (Plateau terrain)
 {
+
 }
+
 
 bool conditionFin(Plateau terrain)
 {
-	if (terrain.listeJoueur.size() == 0)
+	for (int i = 0 ; i < terrain.listeJoueur.size() ; i++ )
 	{
-		return true ;
-	}
-	else if (terrain.listeObjet[terrain.listeObjet.size()-1].getNameobj() == "tresor")
+		if (terrain.listeJoueur[i].isAlive())
+		{
+			return false ;
+		}
+	} 
+	if (terrain.listeObjet[terrain.listeObjet.size()-1].getNameobj() == "tresor")
 	{
 		return true ;
 	}
@@ -703,9 +758,7 @@ void chooseGame(int & choix)
 		}
 		while (choixValide(choix2))
 		{
-cerr << "while" << endl ;
 			return chooseGame(choix) ;
-cerr << "while2" << endl ;
 		}
 		SavedGame(choix2) ;
 		return ;
