@@ -36,7 +36,7 @@ bool Pirate::deplacer()
     bool possible = false;
     int i = 1;
     int tmp = rand() %9 + 1;
-    while (i <= nbdec)
+    while (i <= nb_dep)
     {
         possible = false;
         while (tmp == 5 || i == 1)
