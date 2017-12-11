@@ -16,10 +16,15 @@ Player::Player(int x, int y) : x(x), y(y), vivant(true), chance(0)
     nom = "Player " + nbPlayer;
 }
 
-Player::Player(int x, int y, std::string nom) : x(x), y(y), vivant(true), chance(0), nom(nom)
+Player::Player(int x, int y, std::string nom) : x(x), y(y), vivant(true), nom(nom)
 {
     //ctor
     nbPlayer++;
+    chance = 0;
+    for (int i = 0; i < objets.size(); i++)
+    {
+        chance += objets[i].getChance();
+    }
 }
 
 Player::Player(int x, int y, std::string nom, bool vivant, int chance, std::vector<Objet> objets) : x(x), y(y), vivant(vivant), chance(chance), nom(nom), objets(objets)

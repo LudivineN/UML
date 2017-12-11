@@ -138,14 +138,14 @@ void affiche(Plateau terrain)
 
 bool Interrupt (char entree, Plateau terrain)
 {
-	if ((entree == '1') || (entree == '2') || (entree == '3') || (entree == '4') || (entree == '6') || (entree == '7') || (entree == '8') || (entree == '9'))
+	int choix ;
+	if ((entree == '1') || (entree == '2') || (entree == '3') || (entree == '4') || (entree == '5')|| (entree == '6') || (entree == '7') || (entree == '8') || (entree == '9'))
 	{
 		return false ;
 	}
 	else
 	{
-		int choix ;
-		cout << "Vous êtes sur le point de quitter la partie" << endl << "Voulez vous :" << endl << "1 : Quitter sans enregistrer" << endl << "2 : Sauvegarder et quitter" << endl << "3 : Sauvegarder et continuer" << "4 : Continuer sans sauvegarder" << endl ;
+		cout << "Vous êtes sur le point de quitter la partie" << endl << "Voulez vous :" << endl << "1 : Quitter sans enregistrer" << endl << "2 : Sauvegarder et quitter" << endl << "3 : Sauvegarder et continuer" << endl << "4 : Continuer sans sauvegarder" << endl ;
 		cin >> choix ;
 		if (choix == 1)
 		{
@@ -178,35 +178,49 @@ bool Interrupt (char entree, Plateau terrain)
 
 void Mecanisme (Plateau terrain)
 {
-	while (!conditionFin(terrain))
+	if (!conditionFin(terrain))
 	{
+//cerr << "1" << endl ;
 		Game(terrain) ;
+//cerr << "2" << endl ;
 		TourEnnemis(terrain) ;
+//cerr << "3" << endl ;
+		Mecanisme(terrain) ;
 	}
-	cout << "Fin de la partie!" << endl << "Merci d'avoir joué à" << endl << "L'île au trésor" << endl ;
+	else
+	{
+		cout << "Fin de la partie!" << endl << "Merci d'avoir joué à" << endl << "L'île au trésor" << endl ;
+	}
 
 }
 
 void TourEnnemis(Plateau current)
 {
+cerr << "1" << endl ;
 	for (int i = 0 ; i < current.listeFlibustier.size() ; i++)
 	{
-		DeplacementPirate(current.listeFlibustier, i) ;
+cerr << "2" << endl ;
+		current.listeFlibustier[i].deplacer() ;
+cerr << "déplacement fait" << endl ;
 		current.Modif() ;
-		affiche (current) ;
+		//affiche (current) ;
 		while (DetectJoueur(current.listeFlibustier, current.listeJoueur, i)) 
 		{
+cerr << "3" << endl ;
 			current.Modif() ;
 			affiche(current) ;
 		}
 	}
 	for (int i = 0 ; i < current.listeBoucanier.size() ; i++)
 	{
-		DeplacementPirate(current.listeBoucanier, i) ;
+cerr << "4" << endl ;
+		current.listeBoucanier[i].deplacer() ;
+cerr << "déplacement fait" << endl ;
 		current.Modif() ;
-		affiche (current) ;
+		//affiche (current) ;
 		while (DetectJoueur(current.listeBoucanier, current.listeJoueur, i)) 
 		{
+cerr << "5" << endl ;
 			current.Modif() ;
 			affiche(current) ;
 		}
@@ -227,7 +241,10 @@ bool DetectJoueur(vector <Pirate> pirate, vector <Player> joueur, int position)
 			{
 				if (joueur[j].combat())
 				{
-					pirate.erase(pirate.begin()+position) ;
+					if (joueur[j].checkObjet("mousquet"))
+					{
+						pirate.erase(pirate.begin()+position) ;
+					}
 				}
 			}
 		}
@@ -237,87 +254,14 @@ bool DetectJoueur(vector <Pirate> pirate, vector <Player> joueur, int position)
 			{
 				if (joueur[j].combat())
 				{
-					pirate.erase(pirate.begin()+position) ;
+					if (joueur[j].checkObjet("mousquet"))
+					{
+						pirate.erase(pirate.begin()+position) ;
+					}
 				}
 			}
 		}
 	}
-}
-
-int randomPlacement()
-{
-	int go = rand() % 10 ;
-	while ((go == 0) || (go == 5))
-	{
-		go = rand() % 10 ;
-	}
-	return go ;
-}
-
-void DeplacementPirate(vector<Pirate> current, int i)
-{
-	int direc = randomPlacement() ;
-	bool z;
-	bool q;
-	bool s;
-	bool d;
-	if (direc == 1)
-	{
-		z = false;
-		q = false;
-		s = true;
-		d = true; 
-	}
-	if (direc == 2)
-	{
-		z = false;
-		q = false;
-		s = false;
-		d = true; 
-	}
-	if (direc == 3)
-	{
-		z = true;
-		q = false;
-		s = false;
-		d = true; 
-	}
-	if (direc == 4)
-	{
-		z = false;
-		q = false;
-		s = true;
-		d = false; 
-	}
-	if (direc == 6)
-	{
-		z = true;
-		q = false;
-		s = false;
-		d = false; 
-	}
-	if (direc == 7)
-	{
-		z = false;
-		q = true;
-		s = true;
-		d = false; 
-	}
-	if (direc == 8)
-	{
-		z = false;
-		q = true;
-		s = false;
-		d = false; 
-	}
-	if (direc == 6)
-	{
-		z = true;
-		q = true;
-		s = false;
-		d = false; 
-	}
-	current[i].deplacer(z, q, s, d);
 }
 
 bool conditionFin(Plateau terrain)
@@ -347,18 +291,20 @@ void NewGame()
 	Mecanisme(jeu) ;
 }
 
-void SavedGame(char number)
+void SavedGame(int number)
 {
 	char ** grille ;
 	vector <Player> Joueur ;
 	vector <Objet> lObjet ;
 	vector <Pirate> Fli ;
 	vector <Pirate> Bouc ;
-	string Map = string("../bin/save/plateau/plateau") + number + ".txt" ;
-	string saveJoueur = string("../bin/save/joueur/joueur") + number + ".txt" ;
-	string saveObjet = string("../bin/save/objet/objet") + number + ".txt" ;
-	string saveF = string("../bin/save/flibustier/flibustier") + number + ".txt" ;
-	string saveB = string("../bin/save/boucanier/boucanier") + number + ".txt" ;
+	string Map = string("bin/save/plateau/plateau") + to_string(number) + ".txt" ;
+
+//cerr << Map << endl ;
+	string saveJoueur = string("bin/save/joueur/joueur") + to_string(number) + ".txt" ;
+	string saveObjet = string("bin/save/objet/objet") + to_string(number) + ".txt" ;
+	string saveF = string("bin/save/flibustier/flibustier") + to_string(number) + ".txt" ;
+	string saveB = string("bin/save/boucanier/boucanier") + to_string(number) + ".txt" ;
 
 	// Récupératio carte
 	ifstream saveMap(Map, ios::in) ;
@@ -379,7 +325,7 @@ void SavedGame(char number)
 	}
 	else
 	{
-		cout << "Erreur d'ouverture de la sauvegarde" << endl ;
+		cout << "Erreur d'ouverture de la sauvegarde1" << endl ;
 		return ;
 	}
 
@@ -700,14 +646,34 @@ void save (Plateau current)
 		cout << "Numéro invalide" << endl << "Entre 1 et 9 compris)" <<endl ;
 		cin >> position ;
 	}
-	string fichierplateau = string("../bin/save/plateau/plateau") + to_string(position) + ".txt" ;
-	string fichierJoueur = string("../bin/save/joueur/joueur") + to_string(position) + ".txt" ;
-	string fichierObjet = string("../bin/save/objet/objet") + to_string(position) + ".txt" ;
-	string fichierFlibustier = string("../bin/save/flibustier/flibustier") + to_string(position) + ".txt" ;
-	string fichierBoucanier = string("../bin/save/boucanier/boucanier") + to_string(position) + ".txt" ;
+
+	string saveExiste = string("bin/save/plateau/plateau") + to_string(position) + ".txt" ;
+	ifstream testsave(saveExiste, ios :: in) ;
+	if (testsave)
+	{
+		int choix = 0 ;
+		cout << "Sauvegarde existante" << endl << "Souhaitez-vous écraser la sauvegarde" << endl << "1 : OUI" << endl << "2 : NON" << endl ;
+		cin >> choix ;
+		if (choix == 2)
+		{
+			save(current) ;
+		}
+		else if (choix != 1)
+		{
+			cout << "Nous n'avons pas compris votre choix" << endl << "Sauvegarde existante" << endl << "Souhaitez-vous écraser la sauvegarde" << endl << "1 : OUI" << endl << "2 : NON" << endl ;
+			cin >> choix ;
+		} 
+	}
+	testsave.close() ;	
+
+	string fichierplateau = string("bin/save/plateau/plateau") + to_string(position) + ".txt" ;
+	string fichierJoueur = string("bin/save/joueur/joueur") + to_string(position) + ".txt" ;
+	string fichierObjet = string("bin/save/objet/objet") + to_string(position) + ".txt" ;
+	string fichierFlibustier = string("bin/save/flibustier/flibustier") + to_string(position) + ".txt" ;
+	string fichierBoucanier = string("bin/save/boucanier/boucanier") + to_string(position) + ".txt" ;
 
 	// Ecriture plateau
-	ofstream saveplateau(fichierplateau, ios ::trunc) ;
+	ofstream saveplateau(fichierplateau, ios :: out | ios ::trunc) ;
 	if (saveplateau)
 	{
 		for (int i = 0 ; i < current.getTaille(); i++)
@@ -727,7 +693,7 @@ void save (Plateau current)
 	saveplateau.close() ;
 
 	// Ecriture joueurs
-	ofstream saveJoueur(fichierJoueur, ios ::trunc) ;
+	ofstream saveJoueur(fichierJoueur, ios :: out | ios ::trunc) ;
 	if (saveJoueur)
 	{
 		for (int a = 0 ; a < current.listeJoueur.size() ; a++)
@@ -784,7 +750,7 @@ void save (Plateau current)
 	saveJoueur.close() ; 
 
 	// Ecriture Objet
-	ofstream saveObjet(fichierObjet, ios ::trunc) ;
+	ofstream saveObjet(fichierObjet, ios :: out | ios ::trunc) ;
 	if (saveObjet)
 	{
 		for (int b = 0 ; b < current.listeObjet.size() ; b++)
@@ -814,7 +780,7 @@ void save (Plateau current)
 	saveObjet.close() ; 
 
 	// Ecriture Flibustier
-	ofstream saveFlibustier(fichierFlibustier, ios ::trunc) ;
+	ofstream saveFlibustier(fichierFlibustier, ios :: out | ios ::trunc) ;
 	if (saveFlibustier)
 	{
 		for (int c = 0 ; c < current.listeFlibustier.size() ; c++)
@@ -832,7 +798,7 @@ void save (Plateau current)
 	saveFlibustier.close() ;
 
 	// Ecriture Boucanier
-	ofstream saveBoucanier(fichierBoucanier, ios ::trunc) ;
+	ofstream saveBoucanier(fichierBoucanier, ios :: out | ios ::trunc) ;
 	if (saveBoucanier)
 	{
 		for (int d = 0 ; d < current.listeBoucanier.size() ; d++)
@@ -848,16 +814,17 @@ void save (Plateau current)
 		return ;
 	}
 	saveBoucanier.close() ; 
-
+	cout << "Sauvegarde réussie" << endl ;
 }
 
 bool choixValide(int choix2)
 {
-	string saveExiste = string("../bin/save/plateau/plateau/") + to_string(choix2) + ".txt" ;
+	int choix3 ;
+	string saveExiste = string("bin/save/plateau/plateau") + to_string(choix2) + ".txt" ;
 	ifstream testsave(saveExiste, ios :: in) ;
 	if (!testsave)
 	{
-		int choix3 ;
+		
 		cout << "Sauvegarde inexistante !" << endl << "Voulez-vous choisir une autre sauvegarde" << endl << "1 : OUI" << endl << "2 : NON" << endl ;
 		cin >> choix3 ;
 		while ((choix3 < 1) || (choix3 > 2))
@@ -878,8 +845,12 @@ bool choixValide(int choix2)
 			return false;
 		}
 	}
-	testsave.close() ;
-	return true ;
+	else
+	{
+		testsave.close() ;
+		return true ;
+	}
+	
 }
 
 void chooseGame(int & choix)
@@ -905,7 +876,7 @@ void chooseGame(int & choix)
 			cout << "Numéro invalide" << endl << "Entre 1 et 9 compris)" <<endl ;
 			cin >> choix2 ;
 		}
-		while (choixValide(choix2))
+		while (!choixValide(choix2))
 		{
 			return chooseGame(choix) ;
 		}
@@ -914,115 +885,139 @@ void chooseGame(int & choix)
 	}
 }
 
-int ChoixDeplacement(Plateau terrain, int i)
+
+int ChoixDeplacement(Plateau terrain, int i, char interruption)
 {
-	int choixDirection;
+	char choixDirection;
 	cout << " le joueur " << terrain.listeJoueur[i].getNom() << " est à la ligne " << terrain.listeJoueur[i].getCase_x() << " et à la colonne " << terrain.listeJoueur[i].getCase_y() << endl;
-	if ((terrain.listeJoueur[i].getCase_x() == 0) && (terrain.listeJoueur[i].getCase_y() == 0))
+	if (!Interrupt(interruption, terrain))
 	{
-		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
-		cout << " X6" << endl;
-		cout << " 23" << endl;
-		cin >> choixDirection;
-		while ((choixDirection != 2) || (choixDirection != 3) || (choixDirection != 6))
+		if ((terrain.listeJoueur[i].getCase_x() == 0) && (terrain.listeJoueur[i].getCase_y() == 0))
 		{
-			cout << "Nous n'avons pas compris votre choix" << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
 			cout << " X6" << endl;
 			cout << " 23" << endl;
 			cin >> choixDirection;
+
+			if ((choixDirection == '2') || (choixDirection == '3') || (choixDirection == '6'))
+			{
+				return choixDirection - '0' ;
+				
+			}
+			else
+			{
+				cout << "Nous n'avons pas compris votre choix" << endl ;
+				return ChoixDeplacement(terrain, i, choixDirection) ;
+			}
 		}
-	}
-	else if ((terrain.listeJoueur[i].getCase_x() == 11) && (terrain.listeJoueur[i].getCase_y() == 11))
-	{
-		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
-		cout << "78 " << endl;
-		cout << "4X " << endl;
-		cin >> choixDirection;
-		while ((choixDirection != 7) || (choixDirection != 8) || (choixDirection != 4))
+		else if ((terrain.listeJoueur[i].getCase_x() == 11) && (terrain.listeJoueur[i].getCase_y() == 11))
 		{
-			cout << "Nous n'avons pas compris votre choix" << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
 			cout << "78 " << endl;
 			cout << "4X " << endl;
 			cin >> choixDirection;
+			if ((choixDirection == '7') || (choixDirection == '8') || (choixDirection == '4'))
+			{
+				return choixDirection - '0' ;
+				
+			}
+			else
+			{
+				cout << "Nous n'avons pas compris votre choix" << endl ;
+				return ChoixDeplacement(terrain, i, choixDirection) ;
+			}
 		}
-	}
-	else if (terrain.listeJoueur[i].getCase_x() == 0)
-	{
-		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
-		cout << "4X6 " << endl;
-		cout << "123 " << endl;
-		cin >> choixDirection;
-		while ((choixDirection != 4) || (choixDirection != 6) || (choixDirection != 1) || (choixDirection != 2) || (choixDirection != 3))
+		else if (terrain.listeJoueur[i].getCase_x() == 0)
 		{
-			cout << "Nous n'avons pas compris votre choix" << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
-			cout << "4X6" << endl;
-			cout << "123" << endl;
+			cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "4X6 " << endl;
+			cout << "123 " << endl;
 			cin >> choixDirection;
+			if ((choixDirection == '4') || (choixDirection == '6') || (choixDirection == '1') || (choixDirection == '2') || (choixDirection == '3'))
+			{
+				return choixDirection - '0' ;
+				
+			}
+			else
+			{
+				cout << "Nous n'avons pas compris votre choix" << endl ;
+				return ChoixDeplacement(terrain, i, choixDirection) ;
+			}
 		}
-	}
-	else if (terrain.listeJoueur[i].getCase_x() == 11)
-	{
-		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
-		cout << "789 " << endl;
-		cout << "4X6 " << endl;
-		cin >> choixDirection;
-		while ((choixDirection != 4) || (choixDirection != 6) || (choixDirection != 7) || (choixDirection != 8) || (choixDirection != 9))
+		else if (terrain.listeJoueur[i].getCase_x() == 11)
 		{
-			cout << "Nous n'avons pas compris votre choix" << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
-			cout << "789" << endl;
-			cout << "4X6" << endl;
+			cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "789 " << endl;
+			cout << "4X6 " << endl;
 			cin >> choixDirection;
-		}
-	}
-	else if (terrain.listeJoueur[i].getCase_y() == 0)
-	{
-		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
-		cout << "89" << endl;
-		cout << "X6" << endl;
-		cout << "23" << endl;
-		cin >> choixDirection;
-		while ((choixDirection != 8) || (choixDirection != 6) || (choixDirection != 2) || (choixDirection != 3) || (choixDirection != 9))
+			if ((choixDirection == '4') || (choixDirection == '6') || (choixDirection == '7') || (choixDirection == '8') || (choixDirection == '9'))
+			{
+				return choixDirection - '0' ;
+				
+			}
+			else
+			{
+				cout << "Nous n'avons pas compris votre choix" << endl ;
+				return ChoixDeplacement(terrain, i, choixDirection) ;
+			}
+		}			
+		else if (terrain.listeJoueur[i].getCase_y() == 0)
 		{
-			cout << "Nous n'avons pas compris votre choix" << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
 			cout << "89" << endl;
 			cout << "X6" << endl;
 			cout << "23" << endl;
 			cin >> choixDirection;
+			if ((choixDirection == '8') || (choixDirection == '6') || (choixDirection == '2') || (choixDirection == '3') || (choixDirection == '9'))
+			{
+				return choixDirection - '0' ;
+				
+			}
+			else
+			{
+				cout << "Nous n'avons pas compris votre choix" << endl ;
+				return ChoixDeplacement(terrain, i, choixDirection) ;
+			}
 		}
-	}
-	else if (terrain.listeJoueur[i].getCase_y() == 11)
-	{
-		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
-		cout << "78" << endl;
-		cout << "4X" << endl;
-		cout << "12" << endl;
-		cin >> choixDirection;
-		while ((choixDirection != 8) || (choixDirection != 4) || (choixDirection != 2) || (choixDirection != 1) || (choixDirection != 7))
+		else if (terrain.listeJoueur[i].getCase_y() == 11)
 		{
-			cout << "Nous n'avons pas compris votre choix" << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
 			cout << "78" << endl;
 			cout << "4X" << endl;
 			cout << "12" << endl;
 			cin >> choixDirection;
+			if ((choixDirection == '8') || (choixDirection == '4') || (choixDirection == '2') || (choixDirection == '1') || (choixDirection == '7'))
+					{
+				return choixDirection - '0' ;
+				
+			}
+			else
+			{
+				cout << "Nous n'avons pas compris votre choix" << endl ;
+				return ChoixDeplacement(terrain, i, choixDirection) ;
+			}
 		}
-	}
-	else
-	{
-		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
-		cout << "789" << endl;
-		cout << "4X6" << endl;
-		cout << "123" << endl;
-		cin >> choixDirection;
-		while ((choixDirection != 8) || (choixDirection != 6) || (choixDirection != 2) || (choixDirection != 3) || (choixDirection != 9) || (choixDirection != 7) || (choixDirection != 4) || (choixDirection != 1))
+		else
 		{
-			cout << "Nous n'avons pas compris votre choix " << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
 			cout << "789" << endl;
 			cout << "4X6" << endl;
 			cout << "123" << endl;
-			cin >> choixDirection;
+			cin >> choixDirection ;
+//cerr << choixDirection << endl ;
+			if ((choixDirection == '8') || (choixDirection == '6') || (choixDirection == '2') || (choixDirection == '3') || (choixDirection == '9') || (choixDirection == '7') || (choixDirection == '4') || (choixDirection == '1'))
+			{
+				return choixDirection - '0' ;
+				
+			}
+			else
+			{
+				cout << "Nous n'avons pas compris votre choix" << endl ;
+				return ChoixDeplacement(terrain, i, choixDirection) ;
+			}
 		}
 	}
-	return choixDirection;	
+	return choixDirection - '0';	
 }
 
 void ConversionBool(Plateau terrain, int i, int direc)
@@ -1088,7 +1083,6 @@ void ConversionBool(Plateau terrain, int i, int direc)
 		d = false; 
 	}
 	terrain.listeJoueur[i].deplacer(z, q, s, d);
-	terrain.Modif() ;
 }
 
 bool DetectionEtCombatEnnemi(Plateau terrain, int i)
@@ -1206,57 +1200,92 @@ void Game(Plateau terrain)
 	int choixDirec;
 	for (int i = 0 ; i < terrain.listeJoueur.size() ; i++)
 	{
-		choixDirec = ChoixDeplacement(terrain, i);
+//cerr << "1" << endl ;
+		choixDirec = ChoixDeplacement(terrain, i, '1');
 		ConversionBool(terrain, i, choixDirec);
 		terrain.Modif();
 		affiche(terrain);
 		if (DetectionEtCombatEnnemi(terrain, i) == true)
 		{
+//cerr << "2" << endl ;
 			terrain.Modif();
+//cerr << "2.1" << endl ;
 			affiche(terrain);
+//cerr << "2.3" << endl ;
 			DetectionCoffre(terrain, i);
+//cerr << "2.4" << endl ;
 			terrain.Modif();
+//cerr << "2.5" << endl ;
 			affiche(terrain);
 			if (terrain.listeJoueur[i].checkObjet("pelle"))
 			{
+//cerr << "3" << endl ;
 				if (Creuser(terrain, i))
 				{
+//cerr << "4" << endl ;
 					cout << "Le joueur " << terrain.listeJoueur[i].getNom() << " a trouvé le trésor !" << endl;
 					cout << "La partie est terminée" << endl; 
 					return;
 				}
 				else 
 				{
+//cerr << "5" << endl ;
 					cout << "Le joueur " << terrain.listeJoueur[i].getNom() << " n'as pas trouvé le trésor !" << endl;
 					cout << "La partie continue" << endl; 
 				}
-			}			
+			}
+			return ;			
 		}
 		else 
 		{
+//cerr << "6" << endl ;
 			int countNbMort;
 			for (int j = 0; j < terrain.listeJoueur.size() ; j++)
 			{
+//cerr << "7" << endl ;
 				if (!terrain.listeJoueur[j].isAlive())
 				{
+//cerr << "8" << endl ;
 					cout << " le joueur " << terrain.listeJoueur[j].getNom() << " est mort!" <<endl;
 					countNbMort++;
 				}
 				else 
 				{
+//cerr << "9" << endl ;
 					cout << " le joueur " << terrain.listeJoueur[j].getNom() << " est toujours en vie!" <<endl;
 				}
 			}
 			if (countNbMort == terrain.listeJoueur.size())
 			{
+//cerr << "10" << endl ;
 				cout << "Tous les joueurs sont morts! La partie est terminée." << endl;
 				return;
 			}
 		}
+		return ;
 	}
+	return ;
 }
 
 
+void ModifVecteurJoueur(Plateau terrain, int i, int pos_x, int pos_y)
+{
+	string nom = terrain.listeJoueur[i].getNom();
+	Player tmp (pos_x, pos_y, nom);
+	terrain.listeJoueur[i] = tmp;
+}
+
+void ModifVecteurFlibustier(Plateau terrain, int i, int pos_x, int pos_y)
+{
+	Flibustier tmp (pos_x, pos_y);
+	terrain.listeFlibustier[i] = tmp;
+}
+
+void ModifVecteurBoucanier(Plateau terrain, int i, int pos_x, int pos_y)
+{
+	Boucanier tmp (pos_x, pos_y);
+	terrain.listeBoucanier[i] = tmp;
+}
 
 int main()
 {
