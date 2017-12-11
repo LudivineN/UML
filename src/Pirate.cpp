@@ -36,13 +36,67 @@ void Pirate::show()
     std::cout << "nombre de deplacements: " << nb_dep << std::endl;
 }
 
-bool Pirate::deplacer(bool z, bool q, bool s, bool d)
+bool Pirate::deplacer()
+{
+    bool possible = false;
+    int i = 1;
+    int tmp = rand() %9 + 1;
+    while (i <= nb_dep)
+    {
+        possible = false;
+        while (tmp == 5 || i == 1)
+        {
+            tmp = rand() %9 + 1;
+        }
+        switch (tmp)
+        {
+        case 1:
+            possible = deplacer_bis(0, 1, 1, 0);
+            break;
+
+        case 2:
+            possible = deplacer_bis(0, 0, 1, 0);
+            break;
+
+        case 3:
+            possible = deplacer_bis(0, 0, 1, 1);
+            break;
+
+        case 4:
+            possible = deplacer_bis(0, 1, 0, 0);
+            break;
+
+        case 6:
+            possible = deplacer_bis(0, 0, 0, 1);
+            break;
+
+        case 7:
+            possible = deplacer_bis(1, 1, 0, 0);
+            break;
+
+        case 8:
+            possible = deplacer_bis(1, 0, 0, 0);
+            break;
+
+        case 9:
+            possible = deplacer_bis(1, 0, 0, 1);
+            break;
+
+        default:
+            possible = true;
+            break;
+        }
+        if (possible) {i++;}
+    }
+}
+
+bool Pirate::deplacer_bis(bool z, bool q, bool s, bool d)
 {
     bool noError = false;
-    if (z) { if (!s) {if (y + 1 < 12) {noError = true; y += 1;}}}
-    if (q) { if (!d) {if (x - 1 > 0) {noError = true; x -= 1;}}}
-    if (s) { if (!z) {if (y - 1 > 0) {noError = true; y -= 1;}}}
-    if (d) { if (!q) {if (x + 1 < 12) {noError = true; x += 1;}}}
+    if (z) {if (!s) {if (y + 1 < 12) {noError = true; y += 1;}}}
+    if (q) {if (!d) {if (x - 1 > 0) {noError = true; x -= 1;}}}
+    if (s) {if (!z) {if (y - 1 > 0) {noError = true; y -= 1;}}}
+    if (d) {if (!q) {if (x + 1 < 12) {noError = true; x += 1;}}}
 
     return noError;
 }
