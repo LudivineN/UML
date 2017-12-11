@@ -22,6 +22,11 @@ std::string Pirate::get_nom()
     return nom;
 }
 
+int Pirate :: getPortee()
+{
+	return portee ;
+}
+
 void Pirate::show()
 {
     std::cout << "nom: " << nom << std::endl;

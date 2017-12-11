@@ -21,6 +21,14 @@ void SavedGame(char number) ;
 void save (Plateau current) ;
 bool choixValide(int choix2) ;
 void chooseGame(int & choix) ;
+int ChoixDeplacement(Plateau terrain, int i) ;
+void ConversionBool(Plateau terrain, int i, int direc) ;
+bool DetectionEtCombatEnnemi(Plateau terrain, int i) ;
+void Game(Plateau terrain) ;
+int randomPlacement() ;
+void DeplacementPirate(vector<Pirate> current, int i) ;
+bool DetectJoueur(vector <Pirate> pirate, vector <Player> joueur, int position) ;
+void TourEnnemis(Plateau current) ;
 
 
 
@@ -166,9 +174,136 @@ bool Interrupt (char entree, Plateau terrain)
 
 void Mecanisme (Plateau terrain)
 {
+	while (!conditionFin(terrain))
+	{
+		Game(terrain) ;
+		TourEnnemis(terrain) ;
+	}
+	cout << "Fin de la partie!" << endl << "Merci d'avoir joué à" << endl << "L'île au trésor" << endl ;
 
 }
 
+void TourEnnemis(Plateau current)
+{
+	for (int i = 0 ; i < current.listeFlibustier.size() ; i++)
+	{
+		DeplacementPirate(current.listeFlibustier, i) ;
+		current.Modif() ;
+		affiche (current) ;
+		while (DetectJoueur(current.listeFlibustier, current.listeJoueur, i)) 
+		{
+			current.Modif() ;
+			affiche(current) ;
+		}
+	}
+}
+
+bool DetectJoueur(vector <Pirate> pirate, vector <Player> joueur, int position)
+{
+	int x = pirate[position].getCase_x() ;
+	int y = pirate[position].getCase_y() ; 
+	for (int j = 0 ; j < joueur.size(); j++)
+	{
+		int a = joueur[j].getCase_x();
+		int b = joueur[j].getCase_y();
+		if (pirate[position].getPortee() == 0)
+		{
+			if ((a == x) && (b == y))
+			{
+				if (joueur[j].combat())
+				{
+					pirate.erase(pirate.begin()+position) ;
+				}
+			}
+		}
+		else
+		{
+			if (((a == x) && (b ==  y-1)) || ((a == x-1) && (b == y-1)) || ((a == x-1) && (b == y)) || ((a == x-1) && (b == y+1)) || ((a == x) && (b == y+1)) || ((a == x+1) && (b == y+1)) || ((a == x+1) && (b == y)) || ((a == x-1) && (b == y-1))) 
+			{
+				if (joueur[j].combat())
+				{
+					pirate.erase(pirate.begin()+position) ;
+				}
+			}
+		}
+	}
+}
+
+int randomPlacement()
+{
+	int go = rand() % 10 ;
+	while ((go == 0) || (go == 5))
+	{
+		go = rand() % 10 ;
+	}
+	return go ;
+}
+
+void DeplacementPirate(vector<Pirate> current, int i)
+{
+	int direc = randomPlacement() ;
+	bool z;
+	bool q;
+	bool s;
+	bool d;
+	if (direc == 1)
+	{
+		z = false;
+		q = false;
+		s = true;
+		d = true; 
+	}
+	if (direc == 2)
+	{
+		z = false;
+		q = false;
+		s = false;
+		d = true; 
+	}
+	if (direc == 3)
+	{
+		z = true;
+		q = false;
+		s = false;
+		d = true; 
+	}
+	if (direc == 4)
+	{
+		z = false;
+		q = false;
+		s = true;
+		d = false; 
+	}
+	if (direc == 6)
+	{
+		z = true;
+		q = false;
+		s = false;
+		d = false; 
+	}
+	if (direc == 7)
+	{
+		z = false;
+		q = true;
+		s = true;
+		d = false; 
+	}
+	if (direc == 8)
+	{
+		z = false;
+		q = true;
+		s = false;
+		d = false; 
+	}
+	if (direc == 6)
+	{
+		z = true;
+		q = true;
+		s = false;
+		d = false; 
+	}
+	current[i].deplacer(z, q, s, d);
+}
 
 bool conditionFin(Plateau terrain)
 {
@@ -764,6 +899,350 @@ void chooseGame(int & choix)
 		return ;
 	}
 }
+
+int ChoixDeplacement(Plateau terrain, int i)
+{
+	int choixDirection;
+	cout << " le joueur " << terrain.listeJoueur[i].getNom() << " est à la ligne " << terrain.listeJoueur[i].getCase_x() << " et à la colonne " << terrain.listeJoueur[i].getCase_y() << endl;
+	if ((terrain.listeJoueur[i].getCase_x() == 0) && (terrain.listeJoueur[i].getCase_y() == 0))
+	{
+		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+		cout << " X6" << endl;
+		cout << " 23" << endl;
+		cin >> choixDirection;
+		while ((choixDirection != 2) || (choixDirection != 3) || (choixDirection != 6))
+		{
+			cout << "Nous n'avons pas compris votre choix" << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << " X6" << endl;
+			cout << " 23" << endl;
+			cin >> choixDirection;
+		}
+	}
+	else if ((terrain.listeJoueur[i].getCase_x() == 11) && (terrain.listeJoueur[i].getCase_y() == 11))
+	{
+		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+		cout << "78 " << endl;
+		cout << "4X " << endl;
+		cin >> choixDirection;
+		while ((choixDirection != 7) || (choixDirection != 8) || (choixDirection != 4))
+		{
+			cout << "Nous n'avons pas compris votre choix" << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "78 " << endl;
+			cout << "4X " << endl;
+			cin >> choixDirection;
+		}
+	}
+	else if (terrain.listeJoueur[i].getCase_x() == 0)
+	{
+		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+		cout << "4X6 " << endl;
+		cout << "123 " << endl;
+		cin >> choixDirection;
+		while ((choixDirection != 4) || (choixDirection != 6) || (choixDirection != 1) || (choixDirection != 2) || (choixDirection != 3))
+		{
+			cout << "Nous n'avons pas compris votre choix" << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "4X6" << endl;
+			cout << "123" << endl;
+			cin >> choixDirection;
+		}
+	}
+	else if (terrain.listeJoueur[i].getCase_x() == 11)
+	{
+		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+		cout << "789 " << endl;
+		cout << "4X6 " << endl;
+		cin >> choixDirection;
+		while ((choixDirection != 4) || (choixDirection != 6) || (choixDirection != 7) || (choixDirection != 8) || (choixDirection != 9))
+		{
+			cout << "Nous n'avons pas compris votre choix" << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "789" << endl;
+			cout << "4X6" << endl;
+			cin >> choixDirection;
+		}
+	}
+	else if (terrain.listeJoueur[i].getCase_y() == 0)
+	{
+		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+		cout << "89" << endl;
+		cout << "X6" << endl;
+		cout << "23" << endl;
+		cin >> choixDirection;
+		while ((choixDirection != 8) || (choixDirection != 6) || (choixDirection != 2) || (choixDirection != 3) || (choixDirection != 9))
+		{
+			cout << "Nous n'avons pas compris votre choix" << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "89" << endl;
+			cout << "X6" << endl;
+			cout << "23" << endl;
+			cin >> choixDirection;
+		}
+	}
+	else if (terrain.listeJoueur[i].getCase_y() == 11)
+	{
+		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+		cout << "78" << endl;
+		cout << "4X" << endl;
+		cout << "12" << endl;
+		cin >> choixDirection;
+		while ((choixDirection != 8) || (choixDirection != 4) || (choixDirection != 2) || (choixDirection != 1) || (choixDirection != 7))
+		{
+			cout << "Nous n'avons pas compris votre choix" << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "78" << endl;
+			cout << "4X" << endl;
+			cout << "12" << endl;
+			cin >> choixDirection;
+		}
+	}
+	else
+	{
+		cout << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+		cout << "789" << endl;
+		cout << "4X6" << endl;
+		cout << "123" << endl;
+		cin >> choixDirection;
+		while ((choixDirection != 8) || (choixDirection != 6) || (choixDirection != 2) || (choixDirection != 3) || (choixDirection != 9) || (choixDirection != 7) || (choixDirection != 4) || (choixDirection != 1))
+		{
+			cout << "Nous n'avons pas compris votre choix " << endl << "veuillez choisir ou vous souhaitez aller, X est votre position:" << endl;
+			cout << "789" << endl;
+			cout << "4X6" << endl;
+			cout << "123" << endl;
+			cin >> choixDirection;
+		}
+	}
+	return choixDirection;	
+}
+
+void ConversionBool(Plateau terrain, int i, int direc)
+{
+	bool z;
+	bool q;
+	bool s;
+	bool d;
+	if (direc == 1)
+	{
+		z = false;
+		q = false;
+		s = true;
+		d = true; 
+	}
+	if (direc == 2)
+	{
+		z = false;
+		q = false;
+		s = false;
+		d = true; 
+	}
+	if (direc == 3)
+	{
+		z = true;
+		q = false;
+		s = false;
+		d = true; 
+	}
+	if (direc == 4)
+	{
+		z = false;
+		q = false;
+		s = true;
+		d = false; 
+	}
+	if (direc == 6)
+	{
+		z = true;
+		q = false;
+		s = false;
+		d = false; 
+	}
+	if (direc == 7)
+	{
+		z = false;
+		q = true;
+		s = true;
+		d = false; 
+	}
+	if (direc == 8)
+	{
+		z = false;
+		q = true;
+		s = false;
+		d = false; 
+	}
+	if (direc == 6)
+	{
+		z = true;
+		q = true;
+		s = false;
+		d = false; 
+	}
+	terrain.listeJoueur[i].deplacer(z, q, s, d);
+	terrain.Modif() ;
+}
+
+bool DetectionEtCombatEnnemi(Plateau terrain, int i)
+{
+	int x = terrain.listeJoueur[i].getCase_x();
+	int y = terrain.listeJoueur[i].getCase_y();
+	for (int j = 0; j < terrain.listeFlibustier.size(); j++)
+	{
+		int a = terrain.listeFlibustier[j].getCase_x();
+		int b = terrain.listeFlibustier[j].getCase_y();
+		if (!terrain.listeJoueur[i].checkObjet("mousquet"))
+		{
+			if ((a == x) && (b == y))
+			{
+				terrain.listeJoueur[i].combat();
+				if (!terrain.listeJoueur[i].isAlive())
+				{
+					return false;
+				}
+			}
+		}
+		else
+		{
+			if (((a == x) && (b ==  y-1)) || ((a == x-1) && (b == y-1)) || ((a == x-1) && (b == y)) || ((a == x-1) && (b == y+1)) || ((a == x) && (b == y+1)) || ((a == x+1) && (b == y+1)) || ((a == x+1) && (b == y)) || ((a == x-1) && (b == y-1)) || ((a == x) && (b == y)))  
+			{
+				terrain.listeJoueur[i].combat();
+				if (!terrain.listeJoueur[i].isAlive())
+				{
+					return false;
+				}
+				else 
+				{
+					terrain.listeFlibustier.erase(terrain.listeFlibustier.begin()+j);
+				}
+			}
+		}
+	} 
+	for (int j = 0; j < terrain.listeBoucanier.size(); j++)
+	{
+		int a = terrain.listeBoucanier[j].getCase_x();
+		int b = terrain.listeBoucanier[j].getCase_y();
+		if (!terrain.listeJoueur[i].checkObjet("mousquet"))
+		{
+			if ((a == x) && (b == y))
+			{
+				terrain.listeJoueur[i].combat();
+				if (!terrain.listeJoueur[i].isAlive())
+				{
+					return false;
+				}
+			}
+		}
+		else
+		{
+			if (((a == x) && (b ==  y-1)) || ((a == x-1) && (b == y-1)) || ((a == x-1) && (b == y)) || ((a == x-1) && (b == y+1)) || ((a == x) && (b == y+1)) || ((a == x+1) && (b == y+1)) || ((a == x+1) && (b == y)) || ((a == x-1) && (b == y-1)) || ((a == x) && (b == y))) 
+			{
+				terrain.listeJoueur[i].combat();
+				if (!terrain.listeJoueur[i].isAlive())
+				{
+					return false;
+				}
+				else 
+				{
+					terrain.listeBoucanier.erase(terrain.listeBoucanier.begin()+j);
+				}
+			}
+		}
+	}
+	return true; 
+}
+
+void DetectionCoffre(Plateau terrain, int i)
+{
+	int x = terrain.listeJoueur[i].getCase_x();
+	int y = terrain.listeJoueur[i].getCase_y();
+	for (int j = 0; j < terrain.listeObjet.size(); j++)
+	{
+		int a = terrain.listeObjet[j].getCase_x();
+		int b = terrain.listeObjet[j].getCase_y();
+		if ((a == x) && (b == y))
+		{
+			if (terrain.listeObjet[j].getNameobj() != "tresor")
+			{ 
+				if (!terrain.listeJoueur[i].checkObjet(terrain.listeObjet[i].getNameobj()))
+				{	
+					terrain.listeJoueur[i].AddObjet(terrain.listeObjet[i]);
+					terrain.listeObjet.erase(terrain.listeObjet.begin()+i);
+				}
+			}
+		}
+	}
+}
+
+bool Creuser(Plateau terrain, int i)
+{
+	int x = terrain.listeJoueur[i].getCase_x();
+	int y = terrain.listeJoueur[i].getCase_y();
+	for (int j = 0; j < terrain.listeObjet.size(); j++)
+	{
+		int a = terrain.listeObjet[j].getCase_x();
+		int b = terrain.listeObjet[j].getCase_y();
+		if ((a == x) && (b == y))
+		{
+			if (terrain.listeObjet[j].getNameobj() == "tresor")
+			{
+				return true;
+			}
+		}
+	}
+	return false; 	
+}
+
+void Game(Plateau terrain)
+{
+	int choixDirec;
+	for (int i = 0 ; i < terrain.listeJoueur.size() ; i++)
+	{
+		choixDirec = ChoixDeplacement(terrain, i);
+		ConversionBool(terrain, i, choixDirec);
+		terrain.Modif();
+		affiche(terrain);
+		if (DetectionEtCombatEnnemi(terrain, i) == true)
+		{
+			terrain.Modif();
+			affiche(terrain);
+			DetectionCoffre(terrain, i);
+			terrain.Modif();
+			affiche(terrain);
+			if (terrain.listeJoueur[i].checkObjet("pelle"))
+			{
+				if (Creuser(terrain, i))
+				{
+					cout << "Le joueur " << terrain.listeJoueur[i].getNom() << " a trouvé le trésor !" << endl;
+					cout << "La partie est terminée" << endl; 
+					return;
+				}
+				else 
+				{
+					cout << "Le joueur " << terrain.listeJoueur[i].getNom() << " n'as pas trouvé le trésor !" << endl;
+					cout << "La partie continue" << endl; 
+				}
+			}			
+		}
+		else 
+		{
+			int countNbMort;
+			for (int j = 0; j < terrain.listeJoueur.size() ; j++)
+			{
+				if (!terrain.listeJoueur[j].isAlive())
+				{
+					cout << " le joueur " << terrain.listeJoueur[j].getNom() << " est mort!" <<endl;
+					countNbMort++;
+				}
+				else 
+				{
+					cout << " le joueur " << terrain.listeJoueur[j].getNom() << " est toujours en vie!" <<endl;
+				}
+			}
+			if (countNbMort == terrain.listeJoueur.size())
+			{
+				cout << "Tous les joueurs sont morts! La partie est terminée." << endl;
+				return;
+			}
+		}
+	}
+}
+
+
 
 int main()
 {
