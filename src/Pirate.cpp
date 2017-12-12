@@ -22,6 +22,11 @@ std::string Pirate::get_nom()
     return nom;
 }
 
+int Pirate :: getPortee()
+{
+	return portee ;
+}
+
 void Pirate::show()
 {
     std::cout << "nom: " << nom << std::endl;
@@ -36,45 +41,45 @@ bool Pirate::deplacer()
     bool possible = false;
     int i = 1;
     int tmp = rand() %9 + 1;
-    while (i <= nb_dep)
+    while (i < nb_dep || !possible)
     {
         possible = false;
-        while (tmp == 5 || i == 1)
+        while (tmp == 5 && i == 1)
         {
             tmp = rand() %9 + 1;
         }
         switch (tmp)
         {
         case 1:
-            possible = deplacer_bis(0, 1, 1, 0);
-            break;
-
-        case 2:
-            possible = deplacer_bis(0, 0, 1, 0);
-            break;
-
-        case 3:
             possible = deplacer_bis(0, 0, 1, 1);
             break;
 
-        case 4:
-            possible = deplacer_bis(0, 1, 0, 0);
-            break;
-
-        case 6:
+        case 2:
             possible = deplacer_bis(0, 0, 0, 1);
             break;
 
-        case 7:
-            possible = deplacer_bis(1, 1, 0, 0);
+        case 3:
+            possible = deplacer_bis(1, 0, 0, 1);
             break;
 
-        case 8:
+        case 4:
+            possible = deplacer_bis(0, 0, 1, 0);
+            break;
+
+        case 6:
             possible = deplacer_bis(1, 0, 0, 0);
             break;
 
+        case 7:
+            possible = deplacer_bis(0, 1, 1, 0);
+            break;
+
+        case 8:
+            possible = deplacer_bis(0, 1, 0, 0);
+            break;
+
         case 9:
-            possible = deplacer_bis(1, 0, 0, 1);
+            possible = deplacer_bis(1, 1, 0, 0);
             break;
 
         default:
@@ -83,6 +88,7 @@ bool Pirate::deplacer()
         }
         if (possible) {i++;}
     }
+    return possible;
 }
 
 bool Pirate::deplacer_bis(bool z, bool q, bool s, bool d)
