@@ -183,12 +183,15 @@ void Mecanisme (Plateau& terrain, int count = 1)
 	{
 		if (count == 1)
 		{
+//cerr << "1" << endl ;
 		Game(terrain) ;
 		Mecanisme(terrain, 2) ;
 		}
 		else 
 		{
+//cerr << "2" << endl ;
 		TourEnnemis(terrain) ;
+//cerr << "3" << endl ;
 		Mecanisme(terrain, 1) ;
 		}
 	}
@@ -200,25 +203,31 @@ void Mecanisme (Plateau& terrain, int count = 1)
 
 void TourEnnemis(Plateau& current)
 {
+cerr << "1" << endl ;
 	for (int i = 0 ; i < current.listeFlibustier.size() ; i++)
 	{
+cerr << "2" << endl ;
 		current.listeFlibustier[i].deplacer() ;
+cerr << "déplacement fait" << endl ;
 		current.Modif() ;
 		//affiche (current) ;
 		while (DetectJoueur(current.listeFlibustier, current.listeJoueur, i)) 
 		{
+cerr << "3" << endl ;
 			current.Modif() ;
 			affiche(current) ;
 		}
 	}
-	affiche (current) ;
 	for (int i = 0 ; i < current.listeBoucanier.size() ; i++)
 	{
+cerr << "4" << endl ;
 		current.listeBoucanier[i].deplacer() ;
+cerr << "déplacement fait" << endl ;
 		current.Modif() ;
 		//affiche (current) ;
 		while (DetectJoueur(current.listeBoucanier, current.listeJoueur, i)) 
 		{
+cerr << "5" << endl ;
 			current.Modif() ;
 			affiche(current) ;
 		}
@@ -899,6 +908,7 @@ int ChoixDeplacement(Plateau& terrain, int i, char interruption)
 
 			if ((choixDirection == '2') || (choixDirection == '3') || (choixDirection == '6'))
 			{
+				//terrain, i, choixDirection - '0');
 				return choixDirection - '0' ;
 				
 			}
@@ -916,6 +926,7 @@ int ChoixDeplacement(Plateau& terrain, int i, char interruption)
 			cin >> choixDirection;
 			if ((choixDirection == '7') || (choixDirection == '8') || (choixDirection == '4'))
 			{
+				//terrain, i, choixDirection - '0');
 				return choixDirection - '0' ;
 				
 			}
@@ -933,6 +944,7 @@ int ChoixDeplacement(Plateau& terrain, int i, char interruption)
 			cin >> choixDirection;
 			if ((choixDirection == '4') || (choixDirection == '6') || (choixDirection == '1') || (choixDirection == '2') || (choixDirection == '3'))
 			{
+				//terrain, i, choixDirection - '0');
 				return choixDirection - '0' ;
 				
 			}
@@ -950,6 +962,7 @@ int ChoixDeplacement(Plateau& terrain, int i, char interruption)
 			cin >> choixDirection;
 			if ((choixDirection == '4') || (choixDirection == '6') || (choixDirection == '7') || (choixDirection == '8') || (choixDirection == '9'))
 			{
+				//terrain, i, choixDirection - '0');
 				return choixDirection - '0' ;
 				
 			}
@@ -968,6 +981,7 @@ int ChoixDeplacement(Plateau& terrain, int i, char interruption)
 			cin >> choixDirection;
 			if ((choixDirection == '8') || (choixDirection == '6') || (choixDirection == '2') || (choixDirection == '3') || (choixDirection == '9'))
 			{
+				//terrain, i, choixDirection - '0');
 				return choixDirection - '0' ;
 				
 			}
@@ -986,6 +1000,7 @@ int ChoixDeplacement(Plateau& terrain, int i, char interruption)
 			cin >> choixDirection;
 			if ((choixDirection == '8') || (choixDirection == '4') || (choixDirection == '2') || (choixDirection == '1') || (choixDirection == '7'))
 					{
+				//terrain, i, choixDirection - '0');
 				return choixDirection - '0' ;
 				
 			}
@@ -1002,9 +1017,11 @@ int ChoixDeplacement(Plateau& terrain, int i, char interruption)
 			cout << "4X6" << endl;
 			cout << "123" << endl;
 			cin >> choixDirection ;
+//cerr << choixDirection << endl ;
 			if ((choixDirection == '8') || (choixDirection == '6') || (choixDirection == '2') || (choixDirection == '3') || (choixDirection == '9') || (choixDirection == '7') || (choixDirection == '4') || (choixDirection == '1'))
 			{
 				cerr << "entrer dans conversion" <<endl;
+				//terrain, i, choixDirection - '0');
 				return choixDirection - '0' ;
 				
 			}
@@ -1016,6 +1033,7 @@ int ChoixDeplacement(Plateau& terrain, int i, char interruption)
 		}
 	}
 	cerr << "entrer dans conversion" <<endl;
+	//terrain, i, choixDirection - '0');
 	return choixDirection - '0';	
 }
 
@@ -1199,6 +1217,7 @@ void Game(Plateau& terrain)
 	int choixDirec;
 	for (int i = 0 ; i < terrain.listeJoueur.size() ; i++)
 	{
+cerr << "1" << endl ;
 		if (terrain.listeJoueur[i].isAlive() == true)
 		{
 			choixDirec = ChoixDeplacement(terrain, i, '1');
@@ -1207,21 +1226,29 @@ void Game(Plateau& terrain)
 			affiche(terrain);
 			if (DetectionEtCombatEnnemi(terrain, i) == true)
 			{
+cerr << "2" << endl ;
 				terrain.Modif();
+cerr << "2.1" << endl ;
 				affiche(terrain);
+cerr << "2.3" << endl ;
 				DetectionCoffre(terrain, i);
+cerr << "2.4" << endl ;
 				terrain.Modif();
+cerr << "2.5" << endl ;
 				affiche(terrain);
 				if (terrain.listeJoueur[i].checkObjet("pelle"))
 				{
+cerr << "3" << endl ;
 					if (Creuser(terrain, i))
 					{
+cerr << "4" << endl ;
 						cout << "Le joueur " << terrain.listeJoueur[i].getNom() << " a trouvé le trésor !" << endl;
 						cout << "La partie est terminée" << endl; 
 						return;
 					}
 					else 
 					{
+cerr << "5" << endl ;
 						cout << "Le joueur " << terrain.listeJoueur[i].getNom() << " n'as pas trouvé le trésor !" << endl;
 						cout << "La partie continue" << endl; 
 					}
@@ -1229,21 +1256,26 @@ void Game(Plateau& terrain)
 			}
 			else 
 			{
+cerr << "6" << endl ;
 				int countNbMort = 0;
 				for (int j = 0; j < terrain.listeJoueur.size() ; j++)
 				{
+cerr << "7" << endl ;
 					if (!terrain.listeJoueur[j].isAlive())
 					{
+cerr << "8" << endl ;
 						cout << " le joueur " << terrain.listeJoueur[j].getNom() << " est mort!" <<endl;
 						countNbMort++;
 					}
 					else 
 					{
+cerr << "9" << endl ;
 						cout << " le joueur " << terrain.listeJoueur[j].getNom() << " est toujours en vie!" <<endl;
 					}
 				}
 				if (countNbMort == terrain.listeJoueur.size())
 				{
+cerr << "10" << endl ;
 					cout << "Tous les joueurs sont morts! La partie est terminée." << endl;
 					return;
 				}

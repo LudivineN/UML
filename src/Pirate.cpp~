@@ -45,7 +45,7 @@ bool Pirate::deplacer()
     {
         possible = false;
     	int tmp = rand() %9 + 1;
-        while (tmp == 5 && i == 0)
+        while (tmp == 5 && i == 1)
         {
             tmp = rand() %9 + 1;
         }
