@@ -39,7 +39,7 @@ void Pirate::show()
 bool Pirate::deplacer()
 {
     bool possible = false;
-    int i = 1;
+    int i = 0;
     int tmp = rand() %9 + 1;
     while (i < nb_dep || !possible)
     {
