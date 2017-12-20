@@ -24,7 +24,7 @@ void chooseGame(int & choix) ;
 int ChoixDeplacement(Plateau& terrain, int i) ;
 void ConversionBool(Plateau& terrain, int i, int direc) ;
 bool DetectionEtCombatEnnemi(Plateau& terrain, int i) ;
-void Game(Plateau& terrain) ;
+bool Game(Plateau& terrain) ;
 int randomPlacement() ;
 void DeplacementPirate(vector<Pirate> current, int i) ;
 bool DetectJoueur(vector <Pirate> pirate, vector <Player> joueur, int position) ;
@@ -179,18 +179,12 @@ bool Interrupt (char entree, Plateau& terrain)
 
 void Mecanisme (Plateau& terrain, int count = 1)
 {
-	if (!conditionFin(terrain))
+	bool fin_partie = false;
+	while (!fin_partie)
 	{
-		if (count == 1)
-		{
-		Game(terrain) ;
-		Mecanisme(terrain, 2) ;
-		}
-		else 
-		{
-		TourEnnemis(terrain) ;
-		Mecanisme(terrain, 1) ;
-		}
+		fin_partie = Game(terrain);
+		TourEnnemis(terrain);
+		cout << "les ennemis se sont déplacés" << endl;
 	}
 	
 	cout << "Fin de la partie!" << endl << "Merci d'avoir joué à" << endl << "L'île au trésor" << endl ;
@@ -204,25 +198,21 @@ void TourEnnemis(Plateau& current)
 	{
 		current.listeFlibustier[i].deplacer() ;
 		current.Modif() ;
-		//affiche (current) ;
 		while (DetectJoueur(current.listeFlibustier, current.listeJoueur, i)) 
 		{
 			current.Modif() ;
-			affiche(current) ;
 		}
 	}
-	affiche (current) ;
 	for (int i = 0 ; i < current.listeBoucanier.size() ; i++)
 	{
 		current.listeBoucanier[i].deplacer() ;
 		current.Modif() ;
-		//affiche (current) ;
 		while (DetectJoueur(current.listeBoucanier, current.listeJoueur, i)) 
 		{
 			current.Modif() ;
-			affiche(current) ;
 		}
 	}
+	affiche (current) ;
 }
 
 bool DetectJoueur(vector <Pirate> pirate, vector <Player> joueur, int position)
@@ -1074,7 +1064,7 @@ void ConversionBool(Plateau& terrain, int i, int direc)
 		s = false;
 		d = false; 
 	}
-	if (direc == 6)
+	if (direc == 9)
 	{
 		z = true;
 		q = true;
@@ -1099,6 +1089,7 @@ bool DetectionEtCombatEnnemi(Plateau& terrain, int i)
 				terrain.listeJoueur[i].combat();
 				if (!terrain.listeJoueur[i].isAlive())
 				{
+					terrain.listeJoueur.erase(terrain.listeJoueur.begin()+i);
 					return false;
 				}
 			}
@@ -1110,6 +1101,7 @@ bool DetectionEtCombatEnnemi(Plateau& terrain, int i)
 				terrain.listeJoueur[i].combat();
 				if (!terrain.listeJoueur[i].isAlive())
 				{
+					terrain.listeJoueur.erase(terrain.listeJoueur.begin()+i);
 					return false;
 				}
 				else 
@@ -1130,6 +1122,7 @@ bool DetectionEtCombatEnnemi(Plateau& terrain, int i)
 				terrain.listeJoueur[i].combat();
 				if (!terrain.listeJoueur[i].isAlive())
 				{
+					terrain.listeJoueur.erase(terrain.listeJoueur.begin()+i);
 					return false;
 				}
 			}
@@ -1141,6 +1134,7 @@ bool DetectionEtCombatEnnemi(Plateau& terrain, int i)
 				terrain.listeJoueur[i].combat();
 				if (!terrain.listeJoueur[i].isAlive())
 				{
+					terrain.listeJoueur.erase(terrain.listeJoueur.begin()+i);
 					return false;
 				}
 				else 
@@ -1194,7 +1188,7 @@ bool Creuser(Plateau& terrain, int i)
 	return false; 	
 }
 
-void Game(Plateau& terrain)
+bool Game(Plateau& terrain)
 {
 	int choixDirec;
 	for (int i = 0 ; i < terrain.listeJoueur.size() ; i++)
@@ -1204,21 +1198,25 @@ void Game(Plateau& terrain)
 			choixDirec = ChoixDeplacement(terrain, i, '1');
 			ConversionBool(terrain, i, choixDirec);
 			terrain.Modif();
-			affiche(terrain);
 			if (DetectionEtCombatEnnemi(terrain, i) == true)
 			{
 				terrain.Modif();
-				affiche(terrain);
 				DetectionCoffre(terrain, i);
 				terrain.Modif();
 				affiche(terrain);
+				/*vector <Objets> objetplayer;
+				objetplayer = terrain.listeJoueur[i].getObjets();
+				for (int j = 0; j < objetplayer.size(); j++)
+				{
+					cout <<	objetplayer.getNameObj(); 
+				}*/
 				if (terrain.listeJoueur[i].checkObjet("pelle"))
 				{
 					if (Creuser(terrain, i))
 					{
 						cout << "Le joueur " << terrain.listeJoueur[i].getNom() << " a trouvé le trésor !" << endl;
 						cout << "La partie est terminée" << endl; 
-						return;
+						return true;
 					}
 					else 
 					{
@@ -1245,12 +1243,12 @@ void Game(Plateau& terrain)
 				if (countNbMort == terrain.listeJoueur.size())
 				{
 					cout << "Tous les joueurs sont morts! La partie est terminée." << endl;
-					return;
+					return true;
 				}
 			}
 		}
 	}
-	return ;
+	return false;
 }
 
 /*

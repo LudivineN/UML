@@ -163,11 +163,15 @@ void Plateau :: initJ()
 void Plateau :: choixDiff()
 {
 	int difficulte ;
-	cout << "1 : facile" << endl ;
-	cout << "2 : moyen" << endl ;
-	cout << "3 : difficile" << endl ;
-	cout << "4 : expert" << endl ;
-	cout << "5 : hardcore" << endl ;
+	cout << "1 : très facile" << endl ;
+	cout << "2 : facile" << endl ;
+	cout << "3 : moyen" << endl ;
+	cout << "4 : normal" << endl ;
+	cout << "5 : difficile" << endl ;
+	cout << "6 : héroique" << endl ;
+	cout << "7 : expert" << endl ;
+	cout << "8 : légendaire" << endl ;
+	cout << "9 : hardcore" << endl ;
 	cin >> difficulte ;
 	while ((difficulte < 1) || (difficulte >5))
 	{
