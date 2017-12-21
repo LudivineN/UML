@@ -1,0 +1,7 @@
+pelle/5/7/0/1/0
+mousquet/10/0/1/1/50
+armure/9/1/-1/1/90
+pelle/2/7/0/1/0
+mousquet/0/6/1/1/50
+armure/11/10/-1/1/90
+tresor/4/4/-1//0~
