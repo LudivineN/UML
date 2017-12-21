@@ -13,8 +13,8 @@ using namespace std ;
 
 // Prototype
 void affiche(Plateau terrain) ;
-bool Interrupt (char entree, Plateau& terrain) ;
-void Mecanisme (Plateau& terrain, int count ) ;
+bool Interrupt (Plateau& terrain, char entree) ;
+void Mecanisme (Plateau& terrain, bool fin_partie ) ;
 bool conditionFin(Plateau& terrain) ;
 void NewGame() ;
 void SavedGame(char number) ;
@@ -137,12 +137,13 @@ void affiche(Plateau terrain)
 	}
 }
 
-bool Interrupt (char entree, Plateau& terrain)
+bool Interrupt (Plateau& terrain, char entree)
 {
+	bool end_game = false ;
 	int choix ;
 	if ((entree == '1') || (entree == '2') || (entree == '3') || (entree == '4') || (entree == '5')|| (entree == '6') || (entree == '7') || (entree == '8') || (entree == '9'))
 	{
-		return false ;
+		end_game = false ;
 	}
 	else
 	{
@@ -150,36 +151,36 @@ bool Interrupt (char entree, Plateau& terrain)
 		cin >> choix ;
 		if (choix == 1)
 		{
-			return true ;
+			end_game = true ;
 		}
 		else if (choix == 2)
 		{
 			save(terrain) ;
-			return true ;
+			end_game = true ;
 		}
 		else if (choix == 3)
 		{
 			save (terrain) ;
-			return false ;
+			end_game = false ;
 		}
 		else if (choix == 4)
 		{
-			return false ;
+			end_game = false ;
 		}
 		else
 		{
 			cout << "Nous n'avons pas compris votre choix" << endl << "1 : Quitter sans enregistrer" << endl << "2 : Sauvegarder et quitter" << endl << "3 : Sauvegarder et continuer" << endl ;
 			cin >> choix ;
-			return Interrupt(choix, terrain) ;
+			return Interrupt(terrain, choix) ;
 		}
 		 
 	}
+	//Mecanisme(terrain, end_game);
 
 }
 
-void Mecanisme (Plateau& terrain, int count = 1)
+void Mecanisme (Plateau& terrain, bool fin_partie)
 {
-	bool fin_partie = false;
 	while (!fin_partie)
 	{
 		fin_partie = Game(terrain);
@@ -276,7 +277,7 @@ void NewGame()
 {
 	Plateau jeu ;
 	affiche(jeu) ;
-	Mecanisme(jeu) ;
+	Mecanisme(jeu, false) ;
 }
 
 void SavedGame(int number)
@@ -287,8 +288,6 @@ void SavedGame(int number)
 	vector <Pirate> Fli ;
 	vector <Pirate> Bouc ;
 	string Map = string("bin/save/plateau/plateau") + to_string(number) + ".txt" ;
-
-//cerr << Map << endl ;
 	string saveJoueur = string("bin/save/joueur/joueur") + to_string(number) + ".txt" ;
 	string saveObjet = string("bin/save/objet/objet") + to_string(number) + ".txt" ;
 	string saveF = string("bin/save/flibustier/flibustier") + to_string(number) + ".txt" ;
@@ -444,8 +443,22 @@ void SavedGame(int number)
 						Visible = false ;
 					}
 				}
+				else 
+				{
+					int X = atoi(CaseOX.c_str()) ;
+					int Y = atoi(CaseOY.c_str()) ;
+					int P = atoi(Porte.c_str()) ;
+					int C = atoi(ChanceO.c_str()) ;
+					Objet tmp(nomO, X, Y, P, C, Visible) ;
+					Obj.push_back(tmp) ;
+				}
 			}
 		}
+		int x = atoi(CaseX.c_str()) ;
+		int y = atoi(CaseY.c_str()) ;
+		int ChanceJ = atoi(Chance.c_str()) ;
+		Player tmpJ(x, y, nom, Vie, ChanceJ, Obj) ;
+		Joueur.push_back(tmpJ) ;
 	}
 	else
 	{
@@ -521,7 +534,14 @@ void SavedGame(int number)
 					VisibleC = false ;
 				}
 			}
+int XC = atoi(CaseOCX.c_str()) ;
+		int YC = atoi(CaseOCY.c_str()) ;
+		int PC = atoi(PorteC.c_str()) ;
+		int CC = atoi(ChanceOC.c_str()) ;
+		Objet tmpC(nomOC, XC, YC, PC, CC, VisibleC) ;
+		lObjet.push_back(tmpC) ;
 		}
+		
 	}
 	else
 	{
@@ -566,6 +586,10 @@ void SavedGame(int number)
 				coord2 = coord2 +car ;
 			}
 		}
+		int coordx = atoi(coord1.c_str()) ;
+		int coordy = atoi(coord2.c_str()) ;
+		Flibustier tmp(coordx, coordy) ;
+		Fli.push_back(tmp) ;
 	}
 	else
 	{
@@ -610,6 +634,10 @@ void SavedGame(int number)
 				coord2b = coord2b + cara ;
 			}
 		}
+		int coordxb = atoi(coord1b.c_str()) ;
+		int coordyb = atoi(coord2b.c_str()) ;
+		Boucanier tmp(coordxb, coordyb) ;
+		Bouc.push_back(tmp) ;
 	}
 	else
 	{
@@ -618,9 +646,24 @@ void SavedGame(int number)
 	}
 	saveBoucanier.close() ;
 
+for (int i=0 ; i < lObjet.size() ; i++)
+{
+	cout << lObjet[i].getNameobj() << endl ;
+}
+
+for (int j= 0 ; j< 12; j++)
+{
+	for (int k = 0 ; k < 12 ; k++)
+	{
+		cout << grille[j][k] ;
+	}
+	cout << endl ;
+}
+
 	// Création du jeu
 	Plateau jeu(grille, Joueur, lObjet, Fli, Bouc) ;	
-	Mecanisme(jeu) ;
+	affiche(jeu) ;
+	Mecanisme(jeu, false) ;
 }
 
 
@@ -726,8 +769,15 @@ void save (Plateau& current)
 					currentObj = nomOb + "|" + caseXOb + "|" + caseYOb + "|" + porteOb + "|" + chanceOb + "|" + visibleOb + "|" ;
 				}
 				ObjetJ = ObjetJ + currentObj ;
-			} 
-			saveJoueur << nomJ << "/" << CaseXJ << "/" << CaseYJ << "/" << vivantJ << "/" << ChanceJ << "/" << ObjetJ << '\n';
+			}
+			if (a == current.listeJoueur.size()-1)
+			{
+				saveJoueur << nomJ << "/" << CaseXJ << "/" << CaseYJ << "/" << vivantJ << "/" << ChanceJ << "/" << ObjetJ << "~";
+			}
+			else
+			{
+				saveJoueur << nomJ << "/" << CaseXJ << "/" << CaseYJ << "/" << vivantJ << "/" << ChanceJ << "/" << ObjetJ << '\n';
+			}
 		}
 	}
 	else
@@ -757,7 +807,14 @@ void save (Plateau& current)
 				visibleO == "0" ;
 			}
 			string ChanceO = to_string(current.listeObjet[b].getChance()) ;
-			saveObjet << nomO << "/" << CaseXO << "/" << CaseYO << "/" << PorteeO << "/" << visibleO << "/" << ChanceO << '\n';
+			if (b == current.listeObjet.size()-1)
+			{
+				saveObjet << nomO << "/" << CaseXO << "/" << CaseYO << "/" << PorteeO << "/" << visibleO << "/" << ChanceO << "~" ;
+			}
+			else
+			{
+				saveObjet << nomO << "/" << CaseXO << "/" << CaseYO << "/" << PorteeO << "/" << visibleO << "/" << ChanceO << '\n';
+			}
 		}
 	}
 	else
@@ -775,7 +832,14 @@ void save (Plateau& current)
 		{
 			string CaseXF = to_string(current.listeFlibustier[c].getCase_x()) ;
 			string CaseYF = to_string(current.listeFlibustier[c].getCase_y()) ;
-			saveFlibustier << CaseXF << "/" << CaseYF << '\n';
+			if (c== current.listeFlibustier.size()-1)
+			{
+				saveFlibustier << CaseXF << "/" << CaseYF << "~" ;
+			}
+			else
+			{
+				saveFlibustier << CaseXF << "/" << CaseYF << '\n';
+			}
 		}
 	}
 	else
@@ -793,7 +857,14 @@ void save (Plateau& current)
 		{
 			string CaseXD = to_string(current.listeBoucanier[d].getCase_x()) ;
 			string CaseYD = to_string(current.listeBoucanier[d].getCase_y()) ;
-			saveBoucanier << CaseXD << "/" << CaseYD << '\n';
+			if (d == current.listeBoucanier.size() -1)
+			{
+				saveBoucanier << CaseXD << "/" << CaseYD << "~" ;
+			}
+			else
+			{
+				saveBoucanier << CaseXD << "/" << CaseYD << '\n';
+			}
 		}
 	}
 	else
@@ -878,7 +949,7 @@ int ChoixDeplacement(Plateau& terrain, int i, char interruption)
 {
 	char choixDirection;
 	cout << " le joueur " << terrain.listeJoueur[i].getNom() << " est à la ligne " << terrain.listeJoueur[i].getCase_x() << " et à la colonne " << terrain.listeJoueur[i].getCase_y() << endl;
-	if (!Interrupt(interruption, terrain))
+	if (!Interrupt(terrain, interruption))
 	{
 		if ((terrain.listeJoueur[i].getCase_x() == 0) && (terrain.listeJoueur[i].getCase_y() == 0))
 		{
@@ -994,7 +1065,6 @@ int ChoixDeplacement(Plateau& terrain, int i, char interruption)
 			cin >> choixDirection ;
 			if ((choixDirection == '8') || (choixDirection == '6') || (choixDirection == '2') || (choixDirection == '3') || (choixDirection == '9') || (choixDirection == '7') || (choixDirection == '4') || (choixDirection == '1'))
 			{
-				cerr << "entrer dans conversion" <<endl;
 				return choixDirection - '0' ;
 				
 			}
@@ -1005,7 +1075,10 @@ int ChoixDeplacement(Plateau& terrain, int i, char interruption)
 			}
 		}
 	}
-	cerr << "entrer dans conversion" <<endl;
+	else 
+	{
+		return -1 ;
+	}
 	return choixDirection - '0';	
 }
 
@@ -1161,8 +1234,8 @@ void DetectionCoffre(Plateau& terrain, int i)
 			{ 
 				if (!terrain.listeJoueur[i].checkObjet(terrain.listeObjet[i].getNameobj()))
 				{	
-					terrain.listeJoueur[i].AddObjet(terrain.listeObjet[i]);
-					terrain.listeObjet.erase(terrain.listeObjet.begin()+i);
+					terrain.listeJoueur[i].AddObjet(terrain.listeObjet[j]);
+					terrain.listeObjet.erase(terrain.listeObjet.begin()+j);
 				}
 			}
 		}
@@ -1196,6 +1269,10 @@ bool Game(Plateau& terrain)
 		if (terrain.listeJoueur[i].isAlive() == true)
 		{
 			choixDirec = ChoixDeplacement(terrain, i, '1');
+			if (choixDirec == -1)
+			{
+				return true ;
+			}
 			ConversionBool(terrain, i, choixDirec);
 			terrain.Modif();
 			if (DetectionEtCombatEnnemi(terrain, i) == true)
@@ -1204,12 +1281,13 @@ bool Game(Plateau& terrain)
 				DetectionCoffre(terrain, i);
 				terrain.Modif();
 				affiche(terrain);
-				/*vector <Objets> objetplayer;
+				vector <Objet> objetplayer;
 				objetplayer = terrain.listeJoueur[i].getObjets();
+				cout << "Le joueur " << terrain.listeJoueur[i].getNom() << " a dans son inventaire: " <<endl;
 				for (int j = 0; j < objetplayer.size(); j++)
 				{
-					cout <<	objetplayer.getNameObj(); 
-				}*/
+					cout <<	objetplayer[j].getNameobj() << endl; 
+				}
 				if (terrain.listeJoueur[i].checkObjet("pelle"))
 				{
 					if (Creuser(terrain, i))

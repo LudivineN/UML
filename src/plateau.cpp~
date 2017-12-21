@@ -179,6 +179,7 @@ void Plateau :: choixDiff()
 	}
 	int disponibilite = countDispo() ;
 	disponibilite = disponibilite / 9 ; 
+	cout << disponibilite << endl ;
 	this->nbPirate = difficulte * disponibilite ;
 }
 
