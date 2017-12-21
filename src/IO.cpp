@@ -293,7 +293,7 @@ void SavedGame(int number)
 	string saveF = string("bin/save/flibustier/flibustier") + to_string(number) + ".txt" ;
 	string saveB = string("bin/save/boucanier/boucanier") + to_string(number) + ".txt" ;
 
-	// Récupératio carte
+	// Récupération carte
 	ifstream saveMap(Map, ios::in) ;
 	if (saveMap)
 	{
@@ -482,7 +482,7 @@ void SavedGame(int number)
 		while (!saveObject.eof())
 		{
 			saveObject.get(carac) ;
-			if (carac == '\n')
+			if ((carac == '\n') || (carac == '~'))
 			{
 				countOC == 0 ;
 				int XC = atoi(CaseOCX.c_str()) ;
@@ -534,12 +534,7 @@ void SavedGame(int number)
 					VisibleC = false ;
 				}
 			}
-int XC = atoi(CaseOCX.c_str()) ;
-		int YC = atoi(CaseOCY.c_str()) ;
-		int PC = atoi(PorteC.c_str()) ;
-		int CC = atoi(ChanceOC.c_str()) ;
-		Objet tmpC(nomOC, XC, YC, PC, CC, VisibleC) ;
-		lObjet.push_back(tmpC) ;
+	
 		}
 		
 	}
