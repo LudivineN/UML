@@ -12,19 +12,110 @@ using namespace std ;
 
 
 // Prototype
+//! Affichage du plateau
+/*!
+	\param terrain Le plateau du jeu
+	Affiche le plateau sous forme d'un grand tableau de 12 par 12.
+	On y voit les pirates, les coffres, les joueurs, le trésor est invisible.
+	Boucanier = B,
+	Flibustier = F,
+	Coffre = C,
+	Joueur = J,
+*/
 void affiche(Plateau terrain) ;
+
+//! Interruption pendant la partie
+/*!
+	\param terrain Le plateau du jeu.
+	\param entree La touche entrée par l'utilisateur.
+	Prend en entrée la touche de l'utilisateur 
+	et vérifie si le joueur veut continuer de jouer 
+	ou s'il veut s'arreter en plein milieu du jeu.
+	\return un bool true = arrete le jeu, false = on continue la partie 
+*/
 bool Interrupt (Plateau& terrain, char entree) ;
+//! Mecanisme du jeu
+/*!
+	\param terrain Le plateau du jeu.
+	\param fin_partie true = on arrete la partie, false on continue
+	Permet le déroulement du jeu.
+	Tour tous les joueurs,
+	Puis tour tous les ennemis.
+*/
 void Mecanisme (Plateau& terrain, bool fin_partie ) ;
-bool conditionFin(Plateau& terrain) ;
+
+//! Nouvelle partie
+/*!
+	Crétaion du plateau,
+	\sa affiche(Plateau terrain) & Mecanisme(Plateau& terrain, bool fin_partie)
+*/
 void NewGame() ;
+
 void SavedGame(char number) ;
 void save (Plateau& current) ;
 bool choixValide(int choix2) ;
 void chooseGame(int & choix) ;
+
+//! Choix déplacement pour le joueur
+/*!
+	\param terrain plateau de jeu
+	\param i le joueur du tour en cours
+	\return le choix entré par l'utilisateur
+	L'utilisateur choisi vers qu'elle case il décide d'aller et on vérifie si cela est possible
+*/
 int ChoixDeplacement(Plateau& terrain, int i) ;
+//! Conversion du déplacement en 4 bool 
+/*!
+	\param terrain plateau de jeu
+	\param i le joueur du tour en cours
+	\param direc choix du déplacement entré par l'utilisateur
+	On converti le int en 4 bool selon le choix fait par l'utilisateur 
+	et on appel la fonction déplacement du joueur.
+*/
 void ConversionBool(Plateau& terrain, int i, int direc) ;
+//! Detection et combat des ennemis 
+/*!
+	\param terrain plateau de jeu
+	\param i le joueur du tour en cours
+	\return un bool pour savoir si le joueur i est toujours en vie
+	On cherche si il y a un ennemis sur la case courante, si on a le mousquet, sur les cases alentours.
+	Puis on génère le combat en appelant la fonction combat comptenue dans la classe player
+	Cette fonction nous renvoit si le personnage est toujours vivant ou pas.
+	En fonction si toujours en vie on cherche si il y a d'autres ennemis si il n'y en a plus on sort de fonction en renvoyant true
+	Si le joueur est mort on renvoit false.
+*/
 bool DetectionEtCombatEnnemi(Plateau& terrain, int i) ;
+//! Tour des joueurs
+/*!
+	\param terrain plateau de jeu
+	\param i le joueur du tour en cours
+	\return un bool true si jeu terminé pour diverse raison, false si le jeu n'est pas terminé
+	Pour chaque joueur à tour de role on appel diverse fonction.
+	\sa DetectionEtCombatEnnemi(Plateau& terrain, int i) 
+	\sa DetectionCoffre(Plateau& terrain, int i)
+	et si on a la pelle alors on appelle la fonctions suivante
+	\sa Creuser(Plateau& terrain, int i)
+
+*/
 bool Game(Plateau& terrain) ;
+//! Detection coffre et on l'ouvre
+/*!
+	\param terrain plateau de jeu
+	\param i le joueur du tour en cours
+	On cherche si il y a un coffre sur la case de joueur i si oui allors on l'ouvre 
+	et on appelle la fonction addObjet de la classe player pour pouvoir 
+	mettre cet objet dans l'inventaire du joueur, tout en vérifiant si il ne l'a pas déjà.
+*/
+void DetectionCoffre(Plateau& terrain, int i) ;
+//! Creuser pour trouver le trésor
+/*!
+	\param terrain plateau de jeu
+	\param i le joueur du tour en cours
+	\return un bool true il y a le coffre sur la case false il n'y est pas
+	On appel cette fonction uniquement si le joueur i possède la pelle 
+	On regarde si sur la case courante il y a le trésor qui est caché.
+*/
+bool Creuser(Plateau& terrain, int i) ;
 int randomPlacement() ;
 void DeplacementPirate(vector<Pirate> current, int i) ;
 bool DetectJoueur(vector <Pirate> pirate, vector <Player> joueur, int position) ;
@@ -253,25 +344,6 @@ bool DetectJoueur(vector <Pirate> pirate, vector <Player> joueur, int position)
 	}
 }
 
-bool conditionFin(Plateau& terrain)
-{
-	for (int i = 0 ; i < terrain.listeJoueur.size() ; i++ )
-	{
-		if (terrain.listeJoueur[i].isAlive())
-		{
-			return false ;
-		}
-	} 
-	if (terrain.listeObjet[terrain.listeObjet.size()-1].getNameobj() == "tresor")
-	{
-		return false ;
-	}
-	else 
-	{
-		return true ;
-	}
-	return true;
-}
 
 void NewGame()
 {
